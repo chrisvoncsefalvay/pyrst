@@ -8,5 +8,7 @@ setup(
     license='Apache 2.0',
     author='Chris von Csefalvay',
     author_email='chris@chrisvoncsefalvay.com',
-    description='Pyrst is a Python client for Birst\'s API.'
+    description='Pyrst is a Python client for Birst\'s API.',
+    install_requires=['suds', 'pandas', 'PyYAML', 'wsgiref'],
+    classifiers=['Development Status :: 3 - Alpha']
 )

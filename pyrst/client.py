@@ -5,6 +5,7 @@ import yaml
 
 from pyrst.exceptions import SpaceIDException, MissingCredentialsException, MissingInstanceException
 from pyrst.decorators import check_token
+from pyrst.handlers import *
 
 
 class BirstClient(object):
