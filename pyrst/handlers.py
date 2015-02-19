@@ -19,15 +19,11 @@ class DfHandler(Handler):
                 query_output):
 
         _series = []
-        for each in query_output.rows[0]:
-            _series.append(pd.Series(each[0]))
+        for each in query_output.rows:
+            _series.append(each[0])
 
         _df = pd.DataFrame(_series)
 
-        _colnames = []
-        for each in query_output.columnNames[0]:
-            _colnames.append(str(each))
-
-        _df.columns = _colnames
+        _df.columns = query_output.colnames
 
         return _df
