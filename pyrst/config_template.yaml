@@ -1,0 +1,4 @@
+username: ThisIsMyUsername
+password: ThisIsMyPassword
+instance: app2102
+password_is_encrypted: True
