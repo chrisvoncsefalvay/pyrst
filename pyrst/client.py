@@ -127,15 +127,18 @@ class BirstClient(object):
         if len(space) != 36:
             raise SpaceIDException
         else:
-            result = self.connector.service.executeQueryInSpace(self.token,
+            r = self.connector.service.executeQueryInSpace(self.token,
                                                                 query,
                                                                 space)
 
-        if handler:
+
+        if handler & type(handler) == "type":
             _handler = handler()
-            return _handler.process(result)
+            return _handler.process(r)
+        elif handler:
+            return handler.process(r)
         else:
-            return result
+            return r
 
     # retrieve
 
@@ -170,8 +173,10 @@ class BirstClient(object):
                 r.rows += m.rows[0]
                 has_more_rows = m.hasMoreRows
 
-        if handler:
+        if handler & type(handler) == "type":
             _handler = handler()
             return _handler.process(r)
+        elif handler:
+            return handler.process(r)
         else:
             return r
