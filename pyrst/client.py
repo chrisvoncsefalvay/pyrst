@@ -117,6 +117,7 @@ class BirstClient(object):
                      query,
                      handler=None):
         """
+        Retrieves the first 1,000 results for the query.
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
         :param query: Birst BQL query
@@ -143,6 +144,14 @@ class BirstClient(object):
                  space,
                  query,
                  handler=None):
+        """
+        Retrieves the entire dataset for the query.
+
+        :param space: SpaceID of the space (incl. hyphens, 36 chars)
+        :param query: Birst BQL query
+        :param handler: instance of output handler class
+        :return: query result
+        """
 
         if len(space) != 36:
             raise SpaceIDException
