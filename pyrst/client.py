@@ -2,6 +2,7 @@ from base64 import b64decode
 
 from suds.client import Client
 import yaml
+import types
 
 from pyrst.exceptions import SpaceIDException, MissingCredentialsException, MissingInstanceException
 from pyrst.decorators import check_token
@@ -121,7 +122,7 @@ class BirstClient(object):
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
         :param query: Birst BQL query
-        :param handler: instance of output handler class
+        :param handler: output handler class or output handler class instance
         :return: query result
         """
         if len(space) != 36:
@@ -131,12 +132,12 @@ class BirstClient(object):
                                                                 query,
                                                                 space)
 
-
-        if handler & type(handler) == "type":
-            _handler = handler()
-            return _handler.process(r)
-        elif handler:
-            return handler.process(r)
+        if handler:
+            if type(handler) is Instance:
+                return handler.process(r)
+            else:
+                _handler = handler()
+                return _handler.process(r)
         else:
             return r
 
@@ -152,7 +153,7 @@ class BirstClient(object):
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
         :param query: Birst BQL query
-        :param handler: instance of output handler class
+        :param handler: output handler class or output handler class instance
         :return: query result
         """
 
@@ -173,10 +174,11 @@ class BirstClient(object):
                 r.rows += m.rows[0]
                 has_more_rows = m.hasMoreRows
 
-        if handler & type(handler) == "type":
-            _handler = handler()
-            return _handler.process(r)
-        elif handler:
-            return handler.process(r)
+        if handler:
+            if type(handler) is types.TypeType:
+                _handler = handler()
+                return _handler.process(r)
+            else:
+                return handler.process(r)
         else:
             return r

@@ -49,6 +49,10 @@ class JsonHandler(Handler):
     function.
     """
 
+    def __init__(self,
+                 orient="records"):
+        self.orient = orient
+
     def process(self,
                 query_output):
 
@@ -60,5 +64,4 @@ class JsonHandler(Handler):
 
         _df.columns = query_output.colnames
 
-        return _df.to_json(orient="records")
-
+        return _df.to_json(orient = self.orient)
