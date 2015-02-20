@@ -6,6 +6,7 @@ import yaml
 from pyrst.exceptions import SpaceIDException, MissingCredentialsException, MissingInstanceException
 from pyrst.decorators import check_token
 from pyrst.handlers import *
+from pyrst.helpers import Instance, instance_helper
 
 
 class BirstClient(object):
@@ -108,12 +109,15 @@ class BirstClient(object):
 
     # executequery
 
+    # TODO: Handlerise this!
+
     @check_token
     def executequery(self,
                      space,
                      query,
                      handler=None):
         """
+        Retrieves the first 1,000 results for the query.
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
         :param query: Birst BQL query
@@ -126,8 +130,48 @@ class BirstClient(object):
             result = self.connector.service.executeQueryInSpace(self.token,
                                                                 query,
                                                                 space)
+
         if handler:
             _handler = handler()
             return _handler.process(result)
         else:
             return result
+
+    # retrieve
+
+    @check_token
+    def retrieve(self,
+                 space,
+                 query,
+                 handler=None):
+        """
+        Retrieves the entire dataset for the query.
+
+        :param space: SpaceID of the space (incl. hyphens, 36 chars)
+        :param query: Birst BQL query
+        :param handler: instance of output handler class
+        :return: query result
+        """
+
+        if len(space) != 36:
+            raise SpaceIDException
+        else:
+
+            result = self.connector.service.executeQueryInSpace(self.token,
+                                                                query,
+                                                                space)
+            r = instance_helper(result)
+            has_more_rows = result.hasMoreRows
+            query_token = result.queryToken
+
+            while has_more_rows is True:
+                m = self.connector.service.queryMore(self.token,
+                                                     query_token)
+                r.rows += m.rows[0]
+                has_more_rows = m.hasMoreRows
+
+        if handler:
+            _handler = handler()
+            return _handler.process(r)
+        else:
+            return r
