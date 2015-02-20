@@ -72,3 +72,37 @@ class JsonHandler(Handler):
 
         return _df.to_json(orient=self.orient,
                            date_format=self.date_format)
+
+
+class CsvHandler(Handler):
+    """
+    Handler that returns a CSV file, ready to be ingested by Excel etc..
+
+    Currently, this is implemented 'lazily', i.e. the DfHandler is invoked,
+    and the output is then exported into JSON using pandas's CSV export
+    function. Eventually, we will aim to create a thoroughbred CSV export
+    function.
+    """
+
+    def __init__(self,
+                 sep=',',
+                 encoding="utf-8",
+                 index=False):
+        self.sep = sep
+        self.encoding = encoding
+        self.index = index
+
+    def process(self,
+                query_output):
+
+        _series = []
+        for each in query_output.rows:
+            _series.append(each[0])
+
+        _df = pd.DataFrame(_series)
+
+        _df.columns = query_output.colnames
+
+        return _df.to_csv(sep=self.sep,
+                          encoding=self.encoding,
+                          index=self.index)
