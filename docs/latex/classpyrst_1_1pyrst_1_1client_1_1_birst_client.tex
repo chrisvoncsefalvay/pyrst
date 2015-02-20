@@ -1,0 +1,132 @@
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client}{}\section{pyrst.\+pyrst.\+client.\+Birst\+Client Class Reference}
+\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client}\index{pyrst.\+pyrst.\+client.\+Birst\+Client@{pyrst.\+pyrst.\+client.\+Birst\+Client}}
+Inheritance diagram for pyrst.\+pyrst.\+client.\+Birst\+Client\+:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classpyrst_1_1pyrst_1_1client_1_1_birst_client}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a2d349d2e5f467a367a07de6dad164269}{}def {\bfseries \+\_\+\+\_\+init\+\_\+\+\_\+}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a2d349d2e5f467a367a07de6dad164269}
+
+\item 
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_aa367e96d5a65ce5d4afd9a0bd25c2889}{}def {\bfseries \+\_\+\+\_\+repr\+\_\+\+\_\+} (self)\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_aa367e96d5a65ce5d4afd9a0bd25c2889}
+
+\item 
+def \hyperlink{classpyrst_1_1pyrst_1_1client_1_1_birst_client_ab0090c1a32abe9f701063ba814d23656}{login} (self)
+\begin{DoxyCompactList}\small\item\em L\+O\+G\+I\+N A\+N\+D L\+O\+G\+O\+U\+T \#. \end{DoxyCompactList}\item 
+def \hyperlink{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a92c654912a5a6e0e4590fa1714463956}{logout} (self)
+\item 
+def \hyperlink{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a5420fea6cda5cee1115a376e1e24115d}{executequery}
+\begin{DoxyCompactList}\small\item\em Q\+U\+E\+R\+Y\+I\+N\+G \#. \end{DoxyCompactList}\item 
+def \hyperlink{classpyrst_1_1pyrst_1_1client_1_1_birst_client_ae346cadad3a8cf2b479c572a1da846d4}{retrieve}
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a9efbb932ee5e4ef4158da2a34fb748b5}{}{\bfseries password}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a9efbb932ee5e4ef4158da2a34fb748b5}
+
+\item 
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_aa6b17ebf4b4f24fe48510bbe4d576f1b}{}{\bfseries user}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_aa6b17ebf4b4f24fe48510bbe4d576f1b}
+
+\item 
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_abdfde1fd8dd0c8ea85269c0c25e24b90}{}{\bfseries instance}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_abdfde1fd8dd0c8ea85269c0c25e24b90}
+
+\item 
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a3444c0f48bff8492fbfa22c939530a94}{}{\bfseries token}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a3444c0f48bff8492fbfa22c939530a94}
+
+\item 
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a3bb07a58d56486da55c7ca3bb3741cfd}{}{\bfseries connector}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a3bb07a58d56486da55c7ca3bb3741cfd}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\begin{DoxyVerb}Basic Birst client object.
+\end{DoxyVerb}
+ 
+
+\subsection{Member Function Documentation}
+\hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a5420fea6cda5cee1115a376e1e24115d}{}\index{pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}!executequery@{executequery}}
+\index{executequery@{executequery}!pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}}
+\subsubsection[{executequery}]{\setlength{\rightskip}{0pt plus 5cm}def pyrst.\+pyrst.\+client.\+Birst\+Client.\+executequery (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{space, }
+\item[{}]{query, }
+\item[{}]{handler = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a5420fea6cda5cee1115a376e1e24115d}
+
+
+Q\+U\+E\+R\+Y\+I\+N\+G \#. 
+
+The query interface exposes three methods\+:
+\begin{DoxyItemize}
+\item executequery\+: simple querying
+\item more\+: continue querying
+\item retrieve\+: keep querying as long as there are results.
+\end{DoxyItemize}
+
+Unlike in Birst\textquotesingle{}s X\+M\+L A\+P\+I, in Pyrst, the space comes {\itshape before} the query -\/ this is much more intuitive since the query is subordinate to the space rather than the other way around. \begin{DoxyVerb}Retrieves the first 1,000 results for the query.
+
+:param space: SpaceID of the space (incl. hyphens, 36 chars)
+:param query: Birst BQL query
+:param handler: instance of output handler class
+:return: query result
+\end{DoxyVerb}
+ \hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_ab0090c1a32abe9f701063ba814d23656}{}\index{pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}!login@{login}}
+\index{login@{login}!pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}}
+\subsubsection[{login}]{\setlength{\rightskip}{0pt plus 5cm}def pyrst.\+pyrst.\+client.\+Birst\+Client.\+login (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_ab0090c1a32abe9f701063ba814d23656}
+
+
+L\+O\+G\+I\+N A\+N\+D L\+O\+G\+O\+U\+T \#. 
+
+The login A\+P\+I exposes two (fairly selfexplanatory) methods\+:
+\begin{DoxyItemize}
+\item login
+\item logout
+\end{DoxyItemize}
+
+There is no manual token handling in Pyrst -\/ upon login, your token will be appended to the instance as an instance variable. \begin{DoxyVerb}Logs the user in to the instance specified in the basic settings of the
+class with the password and username specified.
+If successful, the token returned will be appended to the class instance
+as an instance variable.
+\end{DoxyVerb}
+ \hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a92c654912a5a6e0e4590fa1714463956}{}\index{pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}!logout@{logout}}
+\index{logout@{logout}!pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}}
+\subsubsection[{logout}]{\setlength{\rightskip}{0pt plus 5cm}def pyrst.\+pyrst.\+client.\+Birst\+Client.\+logout (
+\begin{DoxyParamCaption}
+\item[{}]{self}
+\end{DoxyParamCaption}
+)}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_a92c654912a5a6e0e4590fa1714463956}
+\begin{DoxyVerb}Logs the user out and deletes the token saved in the instance.
+\end{DoxyVerb}
+ \hypertarget{classpyrst_1_1pyrst_1_1client_1_1_birst_client_ae346cadad3a8cf2b479c572a1da846d4}{}\index{pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}!retrieve@{retrieve}}
+\index{retrieve@{retrieve}!pyrst\+::pyrst\+::client\+::\+Birst\+Client@{pyrst\+::pyrst\+::client\+::\+Birst\+Client}}
+\subsubsection[{retrieve}]{\setlength{\rightskip}{0pt plus 5cm}def pyrst.\+pyrst.\+client.\+Birst\+Client.\+retrieve (
+\begin{DoxyParamCaption}
+\item[{}]{self, }
+\item[{}]{space, }
+\item[{}]{query, }
+\item[{}]{handler = {\ttfamily None}}
+\end{DoxyParamCaption}
+)}\label{classpyrst_1_1pyrst_1_1client_1_1_birst_client_ae346cadad3a8cf2b479c572a1da846d4}
+\begin{DoxyVerb}Retrieves the entire dataset for the query.
+
+:param space: SpaceID of the space (incl. hyphens, 36 chars)
+:param query: Birst BQL query
+:param handler: instance of output handler class
+:return: query result
+\end{DoxyVerb}
+ 
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+pyrst/client.\+py\end{DoxyCompactItemize}
