@@ -62,13 +62,7 @@ class JsonHandler(Handler):
     def process(self,
                 query_output):
 
-        _series = []
-        for each in query_output.rows:
-            _series.append(each[0])
-
-        _df = pd.DataFrame(_series)
-
-        _df.columns = query_output.colnames
+        _df = DfHandler().process(query_output=query_output)
 
         return _df.to_json(orient=self.orient,
                            date_format=self.date_format)
@@ -95,13 +89,7 @@ class CsvHandler(Handler):
     def process(self,
                 query_output):
 
-        _series = []
-        for each in query_output.rows:
-            _series.append(each[0])
-
-        _df = pd.DataFrame(_series)
-
-        _df.columns = query_output.colnames
+        _df = DfHandler().process(query_output=query_output)
 
         return _df.to_csv(sep=self.sep,
                           encoding=self.encoding,
