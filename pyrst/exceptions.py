@@ -1,3 +1,5 @@
+# coding=utf-8
+
 class TokenException(Exception):
 
     def __init__(self, value):
@@ -34,6 +36,7 @@ class MissingCredentialsException(AuthException):
         return "You need to provide a password and a username, either via your" \
                " configuration file or at the time of creating the Birst client " \
                "object."
+
 
 class MissingInstanceException(AuthException):
 

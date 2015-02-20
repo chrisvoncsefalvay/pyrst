@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from base64 import b64decode
 
 from suds.client import Client
@@ -22,7 +24,7 @@ class BirstClient(object):
                  configfile=None):
 
         if configfile:
-            with open(configfile, 'r') as _c:
+            with open(configfile) as _c:
                 _config_dict = yaml.load(_c)
 
             self.password = _config_dict["password"]
@@ -51,7 +53,6 @@ class BirstClient(object):
 
     def __repr__(self):
         return "Birst client instance for user %s at %s" % (self.user, self.instance)
-
 
     ####################
     # LOGIN AND LOGOUT #
@@ -129,8 +130,8 @@ class BirstClient(object):
             raise SpaceIDException
         else:
             r = self.connector.service.executeQueryInSpace(self.token,
-                                                                query,
-                                                                space)
+                                                           query,
+                                                           space)
 
         if handler:
             if type(handler) is Instance:
@@ -175,7 +176,7 @@ class BirstClient(object):
                 has_more_rows = m.hasMoreRows
 
         if handler:
-            if type(handler) is types.TypeType:
+            if isinstance(handler, types.TypeType):
                 _handler = handler()
                 return _handler.process(r)
             else:

@@ -1,4 +1,7 @@
+# coding=utf-8
+
 import pandas as pd
+
 
 class Handler(object):
     """
@@ -39,6 +42,7 @@ class DfHandler(Handler):
 
         return _df
 
+
 class JsonHandler(Handler):
     """
     Handler that returns a JSON file, ready to be ingested by D3.
@@ -50,8 +54,10 @@ class JsonHandler(Handler):
     """
 
     def __init__(self,
-                 orient="records"):
+                 orient="records",
+                 date_format="iso"):
         self.orient = orient
+        self.date_format = date_format
 
     def process(self,
                 query_output):
@@ -64,4 +70,5 @@ class JsonHandler(Handler):
 
         _df.columns = query_output.colnames
 
-        return _df.to_json(orient = self.orient)
+        return _df.to_json(orient=self.orient,
+                           date_format=self.date_format)
