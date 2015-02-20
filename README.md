@@ -72,7 +72,7 @@ from pyrst.handlers import DfHandler
 Now you can use it in your query:
 
 ```python
-table = executequery(space = "12345678-abcd-9012-efgh-345678901234",
+table = executequery(space = "12345678-abcd-9012-efab-345678901234",
                      query = "SELECT [# sales_total] from [ALL]",
                      handler = DfHandler)
 ```
