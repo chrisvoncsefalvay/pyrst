@@ -1,7 +1,10 @@
+# coding=utf-8
+
 from base64 import b64decode
 
 from suds.client import Client
 import yaml
+import types
 
 from pyrst.exceptions import SpaceIDException, MissingCredentialsException, MissingInstanceException
 from pyrst.decorators import check_token
@@ -21,7 +24,7 @@ class BirstClient(object):
                  configfile=None):
 
         if configfile:
-            with open(configfile, 'r') as _c:
+            with open(configfile) as _c:
                 _config_dict = yaml.load(_c)
 
             self.password = _config_dict["password"]
@@ -50,7 +53,6 @@ class BirstClient(object):
 
     def __repr__(self):
         return "Birst client instance for user %s at %s" % (self.user, self.instance)
-
 
     ####################
     # LOGIN AND LOGOUT #
@@ -121,21 +123,24 @@ class BirstClient(object):
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
         :param query: Birst BQL query
-        :param handler: instance of output handler class
+        :param handler: output handler class or output handler class instance
         :return: query result
         """
         if len(space) != 36:
             raise SpaceIDException
         else:
-            result = self.connector.service.executeQueryInSpace(self.token,
-                                                                query,
-                                                                space)
+            r = self.connector.service.executeQueryInSpace(self.token,
+                                                           query,
+                                                           space)
 
         if handler:
-            _handler = handler()
-            return _handler.process(result)
+            if type(handler) is Instance:
+                return handler.process(r)
+            else:
+                _handler = handler()
+                return _handler.process(r)
         else:
-            return result
+            return r
 
     # retrieve
 
@@ -149,7 +154,7 @@ class BirstClient(object):
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
         :param query: Birst BQL query
-        :param handler: instance of output handler class
+        :param handler: output handler class or output handler class instance
         :return: query result
         """
 
@@ -171,7 +176,10 @@ class BirstClient(object):
                 has_more_rows = m.hasMoreRows
 
         if handler:
-            _handler = handler()
-            return _handler.process(r)
+            if isinstance(handler, types.TypeType):
+                _handler = handler()
+                return _handler.process(r)
+            else:
+                return handler.process(r)
         else:
             return r
