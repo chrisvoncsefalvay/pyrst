@@ -6,10 +6,10 @@ from suds.client import Client
 import yaml
 import types
 
-from pyrst.exceptions import SpaceIDException, MissingCredentialsException, MissingInstanceException
+from pyrst.exceptions import SpaceIDException, MissingCredentialsException
 from pyrst.decorators import check_token
-from pyrst.handlers import *
-from pyrst.helpers import Instance, instance_helper
+from pyrst.handlers import Handler
+from pyrst.helpers import ResultSet, result_set_helper
 
 
 class BirstClient(object):
@@ -22,6 +22,27 @@ class BirstClient(object):
                  password=None,
                  instance="app2102",
                  configfile=None):
+        """
+        Creates the Birst client object.
+
+        Birst client objects can be created either by directly supplying the
+        username and the base64-encoded password or by putting it in a
+        separate configuration file. The latter version is much preferred,
+        as that way, the password will not be present in your code, not even
+        in a generally non-trivially readable form. It's important to ensure
+        that other than the Python process using Pyrst, no other processes or
+        users have access to the configuration file.
+
+        :param user: username
+        :type user: str
+        :param password: password, encrypted in base64
+        :type password: str
+        :param instance: name of the instance (e.g. 'app2102'). Defaults to
+        app2102.
+        :type instance: str
+        :param configfile: relative path to a configuration file.
+        :type configfile: str
+        """
 
         if configfile:
             with open(configfile) as _c:
@@ -38,13 +59,10 @@ class BirstClient(object):
 
         else:
             self.user = user
-            self.password = password
+            self.password = b64decode(password)
 
         if not self.password or not self.user:
             raise MissingCredentialsException
-
-        if not instance:
-            raise MissingInstanceException
 
         self.instance = "https://" + instance + ".bws.birst.com/CommandWebService.asmx?wsdl"
         self.token = None
@@ -73,12 +91,16 @@ class BirstClient(object):
         class with the password and username specified.
         If successful, the token returned will be appended to the class instance
         as an instance variable.
+
+        :return: token
+        :rtype: str
         """
 
         try:
             self.token = self.connector.service.Login(self.user, self.password)
             print "You have been successfully logged in, %s." % self.user
             print "Your token is: %s" % self.token
+            return self.token
         except Exception as e:
             return e
 
@@ -111,8 +133,6 @@ class BirstClient(object):
 
     # executequery
 
-    # TODO: Handlerise this!
-
     @check_token
     def executequery(self,
                      space,
@@ -122,9 +142,12 @@ class BirstClient(object):
         Retrieves the first 1,000 results for the query.
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
+        :type space: str
         :param query: Birst BQL query
+        :type query: str
         :param handler: output handler class or output handler class instance
-        :return: query result
+        :type handler: Handler
+        :return: query result as processed by the handler
         """
         if len(space) != 36:
             raise SpaceIDException
@@ -134,7 +157,7 @@ class BirstClient(object):
                                                            space)
 
         if handler:
-            if type(handler) is Instance:
+            if type(handler) is ResultSet:
                 return handler.process(r)
             else:
                 _handler = handler()
@@ -150,12 +173,17 @@ class BirstClient(object):
                  query,
                  handler=None):
         """
-        Retrieves the entire dataset for the query.
+        Retrieves the entire dataset for the query, repeating the `queryMore`
+        command as long as there are results. Please be aware that for large
+        queries, *this may take some time*.
 
         :param space: SpaceID of the space (incl. hyphens, 36 chars)
+        :type space: str
         :param query: Birst BQL query
+        :type query: str
         :param handler: output handler class or output handler class instance
-        :return: query result
+        :type handler: Handler
+        :return: query result as processed by the query handler.
         """
 
         if len(space) != 36:
@@ -165,7 +193,7 @@ class BirstClient(object):
             result = self.connector.service.executeQueryInSpace(self.token,
                                                                 query,
                                                                 space)
-            r = instance_helper(result)
+            r = result_set_helper(result)
             has_more_rows = result.hasMoreRows
             query_token = result.queryToken
 
