@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pyrst by rbonedata</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Pyrst</h1>
+        <p class="header">The Python wrapper to the Birst API.</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/rbonedata/pyrst/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/rbonedata/pyrst/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/rbonedata/pyrst">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/rbonedata">rbonedata</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a id="pyrst" class="anchor" href="#pyrst" aria-hidden="true"><span class="octicon octicon-link"></span></a>pyrst</h1>
+
+<p>The Python wrapper to the Birst API.</p>
+
+<ul>
+<li>No token repetition: once you obtain a token, Pyrst will manage it for you
+until you tell it to stop.</li>
+<li>Super easy querying</li>
+<li>Even easier output using handlers</li>
+</ul>
+
+<h1>
+<a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to install</h1>
+
+<p>Until we release this project to PyPI, the best way to install is:</p>
+
+<pre><code>git clone --recursive https://github.com/rbonedata/pyrst.git
+python setup.py install
+</code></pre>
+
+<p>On OS X and Linux, unless you're installing in a venv, you might need to run
+the install scripts as a privileged user (<code>sudo</code>).</p>
+
+<h1>
+<a id="how-to-use" class="anchor" href="#how-to-use" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to use</h1>
+
+<h2>
+<a id="general-usage" class="anchor" href="#general-usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>General usage</h2>
+
+<h3>
+<a id="importing-the-client-and-create-a-client-object" class="anchor" href="#importing-the-client-and-create-a-client-object" aria-hidden="true"><span class="octicon octicon-link"></span></a>Importing the client and create a client object</h3>
+
+<p>You can store configuration in a config file - a template of the config file is
+under the <code>pyrst</code> folder. You can name the config file anything you want. To
+keep the password somewhat safe, use <code>base64</code> encoding and set the
+<code>password_is_encrypted</code> flag to <code>True</code>.</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">from</span> pyrst.client <span class="pl-k">import</span> BirstClient
+
+client <span class="pl-k">=</span> BirstClient(<span class="pl-vpf">configfile</span><span class="pl-k">=</span><span class="pl-s1"><span class="pl-pds">'</span>pyrst/config.yaml<span class="pl-pds">'</span></span>)</pre></div>
+
+<p>Alternatively, you can manually create the client:</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">from</span> pyrst.client <span class="pl-k">import</span> BirstClient
+
+client <span class="pl-k">=</span> BirstClient(<span class="pl-vpf">user</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">"</span>MyUsername<span class="pl-pds">"</span></span>,
+                     <span class="pl-vpf">password</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">"</span>MyPassword<span class="pl-pds">"</span></span>)</pre></div>
+
+<h3>
+<a id="login" class="anchor" href="#login" aria-hidden="true"><span class="octicon octicon-link"></span></a>Login</h3>
+
+<div class="highlight highlight-python"><pre>client.login()</pre></div>
+
+<pre><code>You have been successfully logged in, DOMAIN\Username.
+Your token is: 9b4081fa4b9f3d8d15f77271b7e83902
+</code></pre>
+
+<h3>
+<a id="logout" class="anchor" href="#logout" aria-hidden="true"><span class="octicon octicon-link"></span></a>Logout</h3>
+
+<p>Once you're done, simply use <code>client.logout()</code> to log out.</p>
+
+<h2>
+<a id="querying" class="anchor" href="#querying" aria-hidden="true"><span class="octicon octicon-link"></span></a>Querying</h2>
+
+<p>To query a space, use <code>executequery()</code>. Before querying, it makes sense to
+import the handler that you want to use to display the data, if any:</p>
+
+<div class="highlight highlight-python"><pre><span class="pl-k">from</span> pyrst.handlers <span class="pl-k">import</span> DfHandler</pre></div>
+
+<p>Now you can use it in your query:</p>
+
+<div class="highlight highlight-python"><pre>table <span class="pl-k">=</span> executequery(<span class="pl-vpf">space</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">"</span>12345678-abcd-9012-efab-345678901234<span class="pl-pds">"</span></span>,
+                     <span class="pl-vpf">query</span> <span class="pl-k">=</span> <span class="pl-s1"><span class="pl-pds">"</span><span class="pl-k">SELECT</span> [<span class="pl-c"># sales_total] from [ALL]",</span></span>
+<span class="pl-s1">                     handler <span class="pl-k">=</span> DfHandler)<span class="pl-ii"></span></span></pre></div>
+
+<h1>
+<a id="development-roadmap" class="anchor" href="#development-roadmap" aria-hidden="true"><span class="octicon octicon-link"></span></a>Development roadmap</h1>
+
+<p>The current functionality doesn't do much beyond querying, but we'll be
+steadily developing <code>Pyrst</code>'s capabilities. In particular, multipart querying
+and more handlers will be implemented soon.</p>
+
+<p>Current priorities are:</p>
+
+<ul>
+<li>better handlers,</li>
+<li>better query handling,</li>
+<li>JSON output,</li>
+<li>tests,</li>
+<li>documentation,</li>
+<li>more functionality.</li>
+</ul>
+
+<h1>
+<a id="credits" class="anchor" href="#credits" aria-hidden="true"><span class="octicon octicon-link"></span></a>Credits</h1>
+
+<p>Written by Chris von Csefalvay with the generous support of RB.</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="http://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
