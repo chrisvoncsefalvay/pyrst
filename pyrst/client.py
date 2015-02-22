@@ -5,12 +5,15 @@ from base64 import b64decode
 from suds.client import Client
 import yaml
 import types
+import logging
 
 from pyrst.exceptions import SpaceIDException, MissingCredentialsException
 from pyrst.decorators import check_token
 from pyrst.handlers import Handler
 from pyrst.helpers import ResultSet, result_set_helper
 
+module_logger = logging.getLogger("pyrst.client")
+module_logger.setLevel(logging.DEBUG)
 
 class BirstClient(object):
     """
@@ -44,13 +47,20 @@ class BirstClient(object):
         :type configfile: str
         """
 
+        self.logger = logging.getLogger("pyrst.client")
+        self.logger.info("Creating Birst connector...")
+
         if configfile:
+            self.logger.info("Using configuration file %s" % configfile)
             with open(configfile) as _c:
                 _config_dict = yaml.load(_c)
 
             self.password = _config_dict["password"]
             self.user = _config_dict["username"]
             instance = _config_dict["instance"]
+
+            self.logger.debug("User: %s on instance %s" % (self.user, instance))
+
 
             if _config_dict["password_is_encrypted"] is True:
                 self.password = b64decode(_config_dict["password"])
@@ -68,6 +78,7 @@ class BirstClient(object):
         self.token = None
 
         self.connector = Client(self.instance, location=self.instance)
+        self.logger.debug("Connector set up successfully.")
 
     def __repr__(self):
         return "Birst client instance for user %s at %s" % (self.user, self.instance)
@@ -97,9 +108,10 @@ class BirstClient(object):
         """
 
         try:
+            self.logger.debug("Obtaining token now...")
             self.token = self.connector.service.Login(self.user, self.password)
-            print "You have been successfully logged in, %s." % self.user
-            print "Your token is: %s" % self.token
+            self.logger.info("You have been successfully logged in, %s." % self.user)
+            self.logger.info("Your token is: %s" % self.token)
             return self.token
         except Exception as e:
             return e
@@ -112,9 +124,10 @@ class BirstClient(object):
         Logs the user out and deletes the token saved in the instance.
         """
         try:
+            self.logger.info("Logging out %s..." % self.user)
             self.connector.service.Logout(self.token)
             self.token = None
-            print "You have been logged out."
+            self.logger.warn("You have been logged out.")
         except Exception as e:
             return e
 
@@ -135,6 +148,7 @@ class BirstClient(object):
         :return: array of dicts, each representing a space.
         :type: list of dict of (str, str, str)
         """
+        self.logger.debug("Listing spaces available to user %s..." % self.user)
         p = self.connector.service.listSpaces(self.token).UserSpace
 
         result = []
@@ -142,6 +156,7 @@ class BirstClient(object):
             result.append({"name": each["name"],
                            "owner": each["owner"],
                            "id": each["id"]})
+        self.logger.info("%i spaces found, listing." % len(result))
         return result
 
 
@@ -178,18 +193,24 @@ class BirstClient(object):
         if len(space) != 36:
             raise SpaceIDException
         else:
-            r = self.connector.service.executeQueryInSpace(self.token,
+            self.logger.debug("Executing query.")
+            self.logger.debug("Query:\n%s" % query)
+            self.logger.debug("Space: %s" % space)
+            self.logger.debug("Handled by: %s" % (handler if handler else "raw output"))
+
+            result = self.connector.service.executeQueryInSpace(self.token,
                                                            query,
                                                            space)
 
         if handler:
+            self.logger.debug("Submitting rows to handler %s." % handler)
             if type(handler) is ResultSet:
-                return handler.process(r)
+                return handler.process(result)
             else:
                 _handler = handler()
-                return _handler.process(r)
+                return _handler.process(result)
         else:
-            return r
+            return result
 
     # retrieve
 
@@ -215,21 +236,31 @@ class BirstClient(object):
         if len(space) != 36:
             raise SpaceIDException
         else:
+            self.logger.debug("Executing query.")
+            self.logger.debug("Query:\n%s" % query)
+            self.logger.debug("Space: %s" % space)
+            self.logger.debug("Handled by: %s" % (handler if handler else "raw output"))
 
             result = self.connector.service.executeQueryInSpace(self.token,
                                                                 query,
                                                                 space)
+
             r = result_set_helper(result)
             has_more_rows = result.hasMoreRows
+            self.logger.debug("First result set received.")
             query_token = result.queryToken
+            self.logger.debug("Query token: %s" % query_token)
 
             while has_more_rows is True:
                 m = self.connector.service.queryMore(self.token,
                                                      query_token)
+                self.logger.debug("Receiving batch of %i rows." % (m.numRowsReturned))
                 r.rows += m.rows[0]
                 has_more_rows = m.hasMoreRows
+            self.logger.debug("Completed receiving rows. %i rows received." % len(r.rows))
 
         if handler:
+            self.logger.debug("Submitting rows to handler %s." % handler)
             if isinstance(handler, types.TypeType):
                 _handler = handler()
                 return _handler.process(r)

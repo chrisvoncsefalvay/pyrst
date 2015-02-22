@@ -1,7 +1,9 @@
 # coding=utf-8
 
 import pandas as pd
-
+import logging
+module_logger = logging.getLogger("pyrst.client")
+module_logger.setLevel(logging.DEBUG)
 
 class Handler(object):
     """
@@ -36,6 +38,9 @@ class DfHandler(Handler):
     """
     Handler that returns a `pandas` `DataFrame`.
     """
+    def __init__(self):
+        self.logger = logging.getLogger("pyrst.client")
+        self.logger.info("Setting up %s..." % self.__name__)
 
     def process(self,
                 query_output):
@@ -46,6 +51,7 @@ class DfHandler(Handler):
         :return: `pandas` `DataFrame` object representing the result
         :rtype: DataFrame
         """
+        self.logger.debug("Processing query output...")
 
         _series = []
         for each in query_output.rows:
@@ -54,7 +60,7 @@ class DfHandler(Handler):
         _df = pd.DataFrame(_series)
 
         _df.columns = query_output.colnames
-
+        self.logger.debug("Processing columns: %s" % _df.columns)
         return _df
 
 
@@ -95,6 +101,9 @@ class JsonHandler(Handler):
         """
         self.orient = orient
         self.date_format = date_format
+        self.logger = logging.getLogger("pyrst.client")
+        self.logger.info("Setting up %s..." % self.__name__)
+        self.logger.info("JSON Handler options: %s date format, %s orientation" % (self.date_format, self.orient))
 
     def process(self,
                 query_output):
@@ -106,7 +115,11 @@ class JsonHandler(Handler):
         :rtype: str
         """
 
+        self.logger.debug("Processing to DataFrame.")
         _df = DfHandler().process(query_output=query_output)
+        self.logger.debug("Processing to DataFrame complete.")
+
+        self.logger.debug("Exporting to JSON.")
 
         return _df.to_json(orient=self.orient,
                            date_format=self.date_format)
@@ -140,6 +153,10 @@ class CsvHandler(Handler):
         self.sep = sep
         self.encoding = encoding
         self.index = index
+        self.logger = logging.getLogger("pyrst.client")
+        self.logger.info("Setting up %s..." % self.__name__)
+        self.logger.info("CSV Handler options: separated by %s, encoding: %s" % (self.sep, self.encoding))
+
 
     def process(self,
                 query_output):
@@ -151,8 +168,11 @@ class CsvHandler(Handler):
         :rtype: str
         """
 
+        self.logger.debug("Processing to DataFrame.")
         _df = DfHandler().process(query_output=query_output)
+        self.logger.debug("Processing to DataFrame complete.")
 
+        self.logger.debug("Exporting to CSV.")
         return _df.to_csv(sep=self.sep,
                           encoding=self.encoding,
                           index=self.index)
