@@ -1,6 +1,18 @@
 # coding=utf-8
 
-class TokenException(Exception):
+import logging
+module_logger = logging.getLogger("pyrst.client")
+module_logger.setLevel(logging.DEBUG)
+
+
+class PyrstException(Exception):
+
+    def __init__(self):
+        self.logger = logging.getLogger("pyrst.client")
+        self.logger.warning(self.__repr__())
+
+
+class TokenException(PyrstException):
     """
     Raised when there is no token saved in the instance and a function that
     requires a token (i.e. any function other than login()) is called."
@@ -10,8 +22,7 @@ class TokenException(Exception):
         return "Cannot perform this operation without authentication token. Use" \
                " the login() method to obtain one."
 
-
-class AuthException(Exception):
+class AuthException(PyrstException):
     """
     Raised when the user is not authorised.
     """
@@ -20,7 +31,7 @@ class AuthException(Exception):
         return "Not authorised."
 
 
-class ConnectionException(Exception):
+class ConnectionException(PyrstException):
     """
     Raised when the client could not connect for a network error.
     """
@@ -29,7 +40,7 @@ class ConnectionException(Exception):
         return "Connection error."
 
 
-class SpaceIDException(Exception):
+class SpaceIDException(PyrstException):
     """
     Raised where a space ID is provided that does not meet the formal criteria
     for a space ID (36 characters separated by hyphens).
@@ -41,7 +52,7 @@ class SpaceIDException(Exception):
                "characters separated by hyphens."
 
 
-class MissingCredentialsException(AuthException):
+class MissingCredentialsException(PyrstException):
     """
     Raised where an operation that requires credentials (e.g. login()) is
     called without providing the appropriate credentials, either directly
