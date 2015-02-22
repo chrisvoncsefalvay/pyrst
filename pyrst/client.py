@@ -118,13 +118,39 @@ class BirstClient(object):
         except Exception as e:
             return e
 
+
+    ##################
+    # LISTING SPACES #
+    ##################
+    #
+    # Listing spaces the user has access to.
+
+    # listspaces
+
+    @check_token
+    def listspaces(self):
+        """
+        Lists spaces.
+
+        :return: array of dicts, each representing a space.
+        :type: list of dict of (str, str, str)
+        """
+        p = self.connector.service.listSpaces(self.token).UserSpace
+
+        result = []
+        for each in p:
+            result.append({"name": each["name"],
+                           "owner": each["owner"],
+                           "id": each["id"]})
+        return result
+
+
     ############
     # QUERYING #
     ############
     #
-    # The query interface exposes three methods:
+    # The query interface exposes two methods:
     # - executequery: simple querying
-    # - more: continue querying
     # - retrieve: keep querying as long as there are results.
     #
     # Unlike in Birst's XML API, in Pyrst, the space comes _before_ the query -
