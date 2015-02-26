@@ -19,7 +19,7 @@ class Handler(object):
     """
 
     def __repr__(self):
-        return "Pyrst output handler (type: %s)" % self.__name__
+        return "Pyrst output handler"
 
     def process(self,
                 query_output):
@@ -40,7 +40,7 @@ class DfHandler(Handler):
     """
     def __init__(self):
         self.logger = logging.getLogger("pyrst.client")
-        self.logger.info("Setting up %s..." % self.__name__)
+        self.logger.info("Setting up handler...")
 
     def process(self,
                 query_output):
@@ -102,7 +102,7 @@ class JsonHandler(Handler):
         self.orient = orient
         self.date_format = date_format
         self.logger = logging.getLogger("pyrst.client")
-        self.logger.info("Setting up %s..." % self.__name__)
+        self.logger.info("Setting up JSON handler...")
         self.logger.info("JSON Handler options: %s date format, %s orientation" % (self.date_format, self.orient))
 
     def process(self,
@@ -154,7 +154,7 @@ class CsvHandler(Handler):
         self.encoding = encoding
         self.index = index
         self.logger = logging.getLogger("pyrst.client")
-        self.logger.info("Setting up %s..." % self.__name__)
+        self.logger.info("Setting up CSV handler...")
         self.logger.info("CSV Handler options: separated by %s, encoding: %s" % (self.sep, self.encoding))
 
 
