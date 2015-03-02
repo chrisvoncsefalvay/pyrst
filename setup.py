@@ -4,7 +4,7 @@ from distutils.core import setup
 
 setup(
     name='pyrst',
-    version='0.5.3',
+    version='0.5.9',
     packages=['pyrst'],
     url='https://github.com/rbonedata/pyrst',
     license='Apache 2.0',

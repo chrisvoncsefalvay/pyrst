@@ -36,6 +36,7 @@ class BirstClient(object):
         that other than the Python process using Pyrst, no other processes or
         users have access to the configuration file.
 
+
         :param user: username
         :type user: str
         :param password: password, encrypted in base64

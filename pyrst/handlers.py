@@ -54,12 +54,12 @@ class DfHandler(Handler):
         self.logger.debug("Processing query output...")
 
         _series = []
-        for each in query_output.rows:
+        for each in query_output.rows[0]:
             _series.append(each[0])
 
         _df = pd.DataFrame(_series)
 
-        _df.columns = query_output.colnames
+        _df.columns = query_output.columnNames[0]
         self.logger.debug("Processing columns: %s" % _df.columns)
         return _df
 
