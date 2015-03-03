@@ -2,6 +2,10 @@
 
 import pandas as pd
 import logging
+import json
+
+pd.set_option('display.float_format', lambda x: '%.3f' % x)
+
 module_logger = logging.getLogger("pyrst.client")
 module_logger.setLevel(logging.DEBUG)
 
@@ -54,12 +58,21 @@ class DfHandler(Handler):
         self.logger.debug("Processing query output...")
 
         _series = []
-        for each in query_output.rows[0]:
+        for each in query_output["rows"]:
             _series.append(each[0])
+
+        _typemap = {12: "object", 8: "float"}
+        _types = {}
+        for k,v in enumerate(query_output["dataTypes"]):
+            _types[k] = _typemap[v]
 
         _df = pd.DataFrame(_series)
 
-        _df.columns = query_output.columnNames[0]
+        _df.columns = query_output["columnNames"]
+
+        for k,v in enumerate(_df.columns):
+            _df[v] = _df[v].astype(_types[k])
+
         self.logger.debug("Processing columns: %s" % _df.columns)
         return _df
 
@@ -121,9 +134,11 @@ class JsonHandler(Handler):
 
         self.logger.debug("Exporting to JSON.")
 
-        return _df.to_json(orient=self.orient,
-                           date_format=self.date_format)
+        res = _df.to_json(orient=self.orient,
+                           date_format=self.date_format,
+                           double_precision = 2)
 
+        return json.loads(res)
 
 class CsvHandler(Handler):
     """

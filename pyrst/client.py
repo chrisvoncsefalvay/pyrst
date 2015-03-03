@@ -10,7 +10,6 @@ import logging
 from pyrst.exceptions import SpaceIDException, MissingCredentialsException
 from pyrst.decorators import check_token
 from pyrst.handlers import Handler
-from pyrst.helpers import ResultSet, result_set_helper
 
 module_logger = logging.getLogger("pyrst.client")
 module_logger.setLevel(logging.DEBUG)
@@ -205,11 +204,8 @@ class BirstClient(object):
 
         if handler:
             self.logger.debug("Submitting rows to handler %s." % handler)
-            if type(handler) is ResultSet:
-                return handler.process(result)
-            else:
-                _handler = handler()
-                return _handler.process(result)
+            _handler = handler()
+            return _handler.process(result)
         else:
             return result
 
@@ -246,26 +242,25 @@ class BirstClient(object):
                                                                 query,
                                                                 space)
 
-            r = result_set_helper(result)
-            has_more_rows = result.hasMoreRows
-            self.logger.debug("First result set received.")
-            query_token = result.queryToken
-            self.logger.debug("Query token: %s" % query_token)
+            _result_struct = {}
+            _result_struct["columnNames"] = result.columnNames[0]
+            _result_struct["rows"] = result.rows[0]
+            _result_struct["dataTypes"] = result.dataTypes[0]
+            _result_struct["hasMoreRows"] = result.hasMoreRows
 
-            while has_more_rows is True:
-                m = self.connector.service.queryMore(self.token,
-                                                     query_token)
-                self.logger.debug("Receiving batch of %i rows." % (m.numRowsReturned))
-                r.rows += m.rows[0]
-                has_more_rows = m.hasMoreRows
-            self.logger.debug("Completed receiving rows. %i rows received." % len(r.rows))
+            while _result_struct['hasMoreRows']:
+                _result_struct["queryToken"] = result.queryToken
+                _more_query = self.connector.service.queryMore(self.token,
+                                                               _result_struct['queryToken'])
+                _result_struct["rows"] += _more_query["rows"][0]
+                _result_struct["hasMoreRows"] = _more_query["hasMoreRows"]
 
         if handler:
             self.logger.debug("Submitting rows to handler %s." % handler)
             if isinstance(handler, types.TypeType):
                 _handler = handler()
-                return _handler.process(r)
+                return _handler.process(_result_struct)
             else:
-                return handler.process(r)
+                return handler.process(_result_struct)
         else:
-            return r
+            return _result_struct

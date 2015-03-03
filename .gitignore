@@ -62,4 +62,4 @@ pyrst/config.yaml
 .idea/*
 
 # NonTests
-test/tests.py
+test/test*.py
