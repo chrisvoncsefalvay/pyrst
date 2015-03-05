@@ -14,46 +14,46 @@ from pyrst.handlers import CsvHandler, JsonHandler, DfHandler
 parser = argparse.ArgumentParser(description='A Birst client.')
 
 parser.add_argument('-q', '--query',
-                    required = True)
+                    required=True)
 parser.add_argument('-s', '--space',
-                    required = True,
-                    type = str)
+                    required=True,
+                    type=str)
 parser.add_argument('-u', '--username',
-                    required = False,
-                    type = str)
+                    required=False,
+                    type=str)
 parser.add_argument('-p', '--password',
-                    required = False,
-                    type = str)
+                    required=False,
+                    type=str)
 parser.add_argument('-i', '--instance',
-                    required = False,
-                    type = str)
+                    required=False,
+                    type=str)
 parser.add_argument('-f', '--configfile',
-                    required = False,
-                    type = str)
+                    required=False,
+                    type=str)
 parser.add_argument('-o', '--outputfile',
-                    required = False,
-                    type = str)
+                    required=False,
+                    type=str)
 parser.add_argument('-H', '--handler',
-                    required = False,
-                    default = "JSON",
-                    choices = [None, "CSV", "JSON", "DF", "XLS"])
+                    required=False,
+                    default="JSON",
+                    choices=[None, "CSV", "JSON", "DF", "XLS"])
 
 
 def main():
     args = parser.parse_args()
 
     if args.username and args.password:
-        cl = BirstClient(user = args.username,
-                         password = args.password,
-                         instance = args.instance if args.instance else "app2102")
+        cl = BirstClient(user=args.username,
+                         password=args.password,
+                         instance=args.instance if args.instance else "app2102")
     elif args.configfile:
-        with open(args.configfile, 'r') as config_file:
+        with open(args.configfile) as config_file:
             config = yaml.load(config_file)
             password = b64decode(config["password"]) if config["password_is_encrypted"] else config["password"]
 
-        cl = BirstClient(user = config["username"],
-                         password = password,
-                         instance = getattr(config, "instance", "app2102"))
+        cl = BirstClient(user=config["username"],
+                         password=password,
+                         instance=getattr(config, "instance", "app2102"))
     else:
         raise MissingCredentialsException
 
@@ -64,16 +64,16 @@ def main():
                     "DF": DfHandler,
                     "XLS": DfHandler}
 
-    _res = cl.retrieve(space = args.space,
-                      query = args.query,
-                      handler = _handler_map[args.handler])
+    _res = cl.retrieve(space=args.space,
+                       query=args.query,
+                       handler=_handler_map[args.handler])
 
     if args.outputfile:
         if args.handler == "XLS":
             _res.to_excel(args.outputfile,
-                          index = False,
-                          header = True,
-                          na_rep = "N/A",
+                          index=False,
+                          header=True,
+                          na_rep="N/A",
                           float_format="%.2f")
         else:
             with open(args.outputfile, 'w') as output_file:

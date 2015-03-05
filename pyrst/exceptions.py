@@ -25,6 +25,7 @@ class TokenException(PyrstException):
         return "Cannot perform this operation without authentication token. Use" \
                " the login() method to obtain one."
 
+
 class AuthException(PyrstException):
     """
     Raised when the user is not authorised.

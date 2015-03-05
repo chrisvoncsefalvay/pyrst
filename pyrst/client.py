@@ -17,6 +17,7 @@ default_formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
 module_handler = logging.StreamHandler()
 module_logger.addHandler(module_handler)
 
+
 class BirstClient(object):
     """
     Basic Birst client object.
@@ -54,7 +55,7 @@ class BirstClient(object):
         self.logger.info("Creating Birst connector...")
 
         if configfile:
-            self.logger.info("Using configuration file {configfile}".format(configfile = configfile))
+            self.logger.info("Using configuration file {configfile}".format(configfile=configfile))
             with open(configfile) as _c:
                 _config_dict = yaml.load(_c)
 
@@ -63,8 +64,8 @@ class BirstClient(object):
             instance = _config_dict["instance"]
 
             self.logger.debug("User: {username} on instance {instancename}".
-                              format(username = self.user, instancename = instance))
-
+                              format(username=self.user,
+                                     instancename=instance))
 
             if _config_dict["password_is_encrypted"] is True:
                 self.password = b64decode(_config_dict["password"])
@@ -79,15 +80,15 @@ class BirstClient(object):
             raise MissingCredentialsException
 
         self.instance = "https://{instancename}.bws.birst.com/CommandWebService.asmx?wsdl"\
-            .format(instancename = instance)
+            .format(instancename=instance)
         self.token = None
 
         self.connector = Client(self.instance, location=self.instance)
         self.logger.debug("Connector set up successfully.")
 
     def __repr__(self):
-        return "Birst client instance for user {username} at {instance}".format(username = self.user,
-                                                                                instance = self.instance)
+        return "Birst client instance for user {username} at {instance}".format(username=self.user,
+                                                                                instance=self.instance)
 
     ####################
     # LOGIN AND LOGOUT #
@@ -117,8 +118,8 @@ class BirstClient(object):
             self.logger.debug("Obtaining token now...")
             self.token = self.connector.service.Login(self.user, self.password)
             self.logger.info("You have been successfully logged in, {username}.\n"
-                             "Your token is: {token}".format(username = self.user,
-                                                             token = self.token))
+                             "Your token is: {token}".format(username=self.user,
+                                                             token=self.token))
             return self.token
         except Exception as e:
             return e
@@ -131,13 +132,12 @@ class BirstClient(object):
         Logs the user out and deletes the token saved in the instance.
         """
         try:
-            self.logger.info("Logging out {user}...".format(user = self.user))
+            self.logger.info("Logging out {user}...".format(user=self.user))
             self.connector.service.Logout(self.token)
             self.token = None
             self.logger.warn("You have been logged out.")
         except Exception as e:
             return e
-
 
     ##################
     # LISTING SPACES #
@@ -164,7 +164,6 @@ class BirstClient(object):
 
         self.logger.info("{} spaces found, listing.".format(len(result)))
         return result
-
 
     ############
     # QUERYING #
@@ -203,11 +202,11 @@ class BirstClient(object):
             self.logger.debug("Query:\n{}".format(query))
             self.logger.debug("Space: {}".format(space))
             self.logger.debug("Handled by {handler_class}."
-                              .format(handler_class = handler.__name__ if handler else "raw output"))
+                              .format(handler_class=handler.__name__ if handler else "raw output"))
 
             result = self.connector.service.executeQueryInSpace(self.token,
-                                                           query,
-                                                           space)
+                                                                query,
+                                                                space)
 
         if handler:
             self.logger.debug("Submitting rows to handler {handler_class_name}."
@@ -244,18 +243,17 @@ class BirstClient(object):
             self.logger.debug("Executing query.")
             self.logger.debug("Query:\n{}".format(query))
             self.logger.debug("Space: {}".format(space))
-            # self.logger.debug("Handled by {handler_class}."
-            #                   .format(handler_class = handler.__getattribute__(__name__) if handler else "raw output"))
+            self.logger.debug("Handled by {handler_class}."
+                              .format(handler_class=handler.__name__ if handler else "raw output"))
 
             result = self.connector.service.executeQueryInSpace(self.token,
                                                                 query,
                                                                 space)
 
-            _result_struct = {}
-            _result_struct["columnNames"] = result.columnNames[0]
-            _result_struct["rows"] = result.rows[0]
-            _result_struct["dataTypes"] = result.dataTypes[0]
-            _result_struct["hasMoreRows"] = result.hasMoreRows
+            _result_struct = {"columnNames": result.columnNames[0],
+                              "rows": result.rows[0],
+                              "dataTypes": result.dataTypes[0],
+                              "hasMoreRows": result.hasMoreRows}
 
             while _result_struct['hasMoreRows']:
                 _result_struct["queryToken"] = result.queryToken

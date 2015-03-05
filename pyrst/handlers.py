@@ -9,6 +9,7 @@ pd.set_option('display.float_format', lambda x: '%.3f' % x)
 module_logger = logging.getLogger("pyrst.client")
 module_logger.setLevel(logging.DEBUG)
 
+
 class Handler(object):
     """
     Abstract class that represents Handler objects.
@@ -59,18 +60,19 @@ class DfHandler(Handler):
         _typemap = {12: "object", 8: "float"}
 
         _types = {}
-        for k,v in enumerate(query_output["dataTypes"]):
+        for k, v in enumerate(query_output["dataTypes"]):
             _types[k] = _typemap[v]
 
         _df = pd.DataFrame(_series)
 
         _df.columns = query_output["columnNames"]
 
-        for k,v in enumerate(_df.columns):
+        for k, v in enumerate(_df.columns):
             _df[v] = _df[v].astype(_types[k])
 
         self.logger.debug("Processing columns {}.".format(', '.join(list(_df.columns))))
         return _df
+
 
 class JsonHandler(Handler):
     """
@@ -112,8 +114,8 @@ class JsonHandler(Handler):
         self.logger = logging.getLogger("pyrst.client")
         self.logger.info("Setting up JSON handler...")
         self.logger.info("JSON Handler options: date format is {date_format}, orientation is {orientation}."
-                         .format(date_format = self.date_format,
-                                 orientation = self.orient))
+                         .format(date_format=self.date_format,
+                                 orientation=self.orient))
 
     def process(self,
                 query_output):
@@ -132,10 +134,11 @@ class JsonHandler(Handler):
         self.logger.debug("Exporting to JSON.")
 
         res = _df.to_json(orient=self.orient,
-                           date_format=self.date_format,
-                           double_precision = 2)
+                          date_format=self.date_format,
+                          double_precision=2)
 
         return json.loads(res)
+
 
 class CsvHandler(Handler):
     """
@@ -168,9 +171,8 @@ class CsvHandler(Handler):
         self.logger = logging.getLogger("pyrst.client")
         self.logger.info("Setting up CSV handler...")
         self.logger.info("CSV Handler options: separated by {separator}, encoding: {encoding}"
-                         .format(separator = self.sep,
-                                 encoding = self.encoding))
-
+                         .format(separator=self.sep,
+                                 encoding=self.encoding))
 
     def process(self,
                 query_output):
