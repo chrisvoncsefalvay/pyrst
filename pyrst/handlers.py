@@ -22,9 +22,6 @@ class Handler(object):
     the Handler.
     """
 
-    def __repr__(self):
-        return "Pyrst output handler"
-
     def process(self,
                 query_output):
         """
@@ -57,11 +54,10 @@ class DfHandler(Handler):
         """
         self.logger.debug("Processing query output...")
 
-        _series = []
-        for each in query_output["rows"]:
-            _series.append(each[0])
+        _series = [each[0] for each in query_output["rows"]]
 
         _typemap = {12: "object", 8: "float"}
+
         _types = {}
         for k,v in enumerate(query_output["dataTypes"]):
             _types[k] = _typemap[v]
@@ -73,9 +69,8 @@ class DfHandler(Handler):
         for k,v in enumerate(_df.columns):
             _df[v] = _df[v].astype(_types[k])
 
-        self.logger.debug("Processing columns: %s" % _df.columns)
+        self.logger.debug("Processing columns {}.".format(', '.join(list(_df.columns))))
         return _df
-
 
 class JsonHandler(Handler):
     """
@@ -116,7 +111,9 @@ class JsonHandler(Handler):
         self.date_format = date_format
         self.logger = logging.getLogger("pyrst.client")
         self.logger.info("Setting up JSON handler...")
-        self.logger.info("JSON Handler options: %s date format, %s orientation" % (self.date_format, self.orient))
+        self.logger.info("JSON Handler options: date format is {date_format}, orientation is {orientation}."
+                         .format(date_format = self.date_format,
+                                 orientation = self.orient))
 
     def process(self,
                 query_output):
@@ -170,7 +167,9 @@ class CsvHandler(Handler):
         self.index = index
         self.logger = logging.getLogger("pyrst.client")
         self.logger.info("Setting up CSV handler...")
-        self.logger.info("CSV Handler options: separated by %s, encoding: %s" % (self.sep, self.encoding))
+        self.logger.info("CSV Handler options: separated by {separator}, encoding: {encoding}"
+                         .format(separator = self.sep,
+                                 encoding = self.encoding))
 
 
     def process(self,

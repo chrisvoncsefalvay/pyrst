@@ -1,4 +1,5 @@
 suds==0.4
 wsgiref==0.1.2
-pandas==0.15.2
-PyYAML==3.11
+pandas>=0.15.2
+PyYAML>=3.11
+xlwt==0.7.5

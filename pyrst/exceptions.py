@@ -6,6 +6,9 @@ module_logger.setLevel(logging.DEBUG)
 
 
 class PyrstException(Exception):
+    """
+    Generic, abstract class of exception.
+    """
 
     def __init__(self):
         self.logger = logging.getLogger("pyrst.client")
