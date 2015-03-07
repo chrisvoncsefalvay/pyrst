@@ -7,4 +7,4 @@ pyrst/client.py
 pyrst/decorators.py
 pyrst/exceptions.py
 pyrst/handlers.py
-test/testfile.py
+pyrst/pyrst_cli.py
