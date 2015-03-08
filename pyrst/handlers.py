@@ -70,7 +70,7 @@ class DfHandler(Handler):
         for k, v in enumerate(_df.columns):
             _df[v] = _df[v].astype(_types[k])
 
-        self.logger.debug("Processing columns { }.".format(', '.join(list(_df.columns))))
+        self.logger.debug("Processing columns {columnlist}.".format(columnlist=', '.join(list(_df.columns))))
         return _df
 
 

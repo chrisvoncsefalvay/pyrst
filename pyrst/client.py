@@ -162,7 +162,7 @@ class BirstClient(object):
                    "owner": each["owner"],
                    "id": each["id"]} for each in p]
 
-        self.logger.info("{ } spaces found, listing.".format(len(result)))
+        self.logger.info("{spaces} spaces found, listing.".format(spaces = len(result)))
         return result
 
     ############
@@ -199,8 +199,8 @@ class BirstClient(object):
             raise SpaceIDException
         else:
             self.logger.debug("Executing query.")
-            self.logger.debug("Query:\n{ }".format(query))
-            self.logger.debug("Space: { }".format(space))
+            self.logger.debug("Query:\n{querystring}".format(querystring=query))
+            self.logger.debug("Space: {spaceid}".format(spaceid=space))
             self.logger.debug("Handled by {handler_class}."
                               .format(handler_class=handler.__name__ if handler else "raw output"))
 
@@ -241,8 +241,8 @@ class BirstClient(object):
             raise SpaceIDException
         else:
             self.logger.debug("Executing query.")
-            self.logger.debug("Query:\n{ }".format(query))
-            self.logger.debug("Space: { }".format(space))
+            self.logger.debug("Query:\n{querystring}".format(querystring=query))
+            self.logger.debug("Space: {spaceid}".format(spaceid=space))
             self.logger.debug("Handled by {handler_class}."
                               .format(handler_class=handler.__name__ if handler else "raw output"))
 
@@ -263,7 +263,7 @@ class BirstClient(object):
                 _result_struct["hasMoreRows"] = _more_query["hasMoreRows"]
 
         if handler:
-            self.logger.debug("Submitting rows to handler { }.".format(handler))
+            self.logger.debug("Submitting rows to handler {handlerclass}.".format(handlerclass=handler))
             if isinstance(handler, types.TypeType):
                 _handler = handler()
                 return _handler.process(_result_struct)

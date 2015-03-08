@@ -8,3 +8,4 @@ pyrst/decorators.py
 pyrst/exceptions.py
 pyrst/handlers.py
 pyrst/pyrst_cli.py
+test/testfile.py
